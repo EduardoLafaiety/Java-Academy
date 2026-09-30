@@ -11,6 +11,7 @@ import com.eduardo.poostudy.service.Banco;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 // Esta Classe Contem O Ponto De Entrada Do Programa Spring Boot
 @SpringBootApplication
@@ -18,10 +19,11 @@ public class Main implements CommandLineRunner {
 
     // O Spring Entrega O Service Banco Pelo Construtor
     private final Banco banco;
+    private final JdbcTemplate jdbcTemplate;
 
-    // Este Construtor Recebe O Banco Criado E Gerenciado Pelo Spring
-    public Main(Banco banco) {
+    public Main(Banco banco, JdbcTemplate jdbcTemplate) {
         this.banco = banco;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     // O Metodo Main Continua Sendo O Primeiro Metodo Executado Pela JVM
@@ -34,6 +36,13 @@ public class Main implements CommandLineRunner {
     // O Metodo Run Executa A Mesma Logica Que Antes Ficava Diretamente No Main
     @Override
     public void run(String... args) {
+
+        String nomeDoBanco = jdbcTemplate.queryForObject(
+                "SELECT current_database()",
+                String.class
+        );
+
+        System.out.println("Conectado ao banco: " + nomeDoBanco);
 
         // Criamos Um Cliente Que Depois Sera Usado Por Uma Conta
         Cliente eduardo = new Cliente("Eduardo", "111.111.111-11");
